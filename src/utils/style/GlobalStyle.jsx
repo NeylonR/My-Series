@@ -19,6 +19,7 @@ export const StyledGlobalStyle = createGlobalStyle`
         min-height: 90vh;
         ${flex({ just : 'center', align : 'center', direction : 'column'})};
         padding: 4em 2em;
+        word-break:break-word;
     }
     section{
         ${flex({align:"center", direction:"column"})};
