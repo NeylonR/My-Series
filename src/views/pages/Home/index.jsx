@@ -4,6 +4,7 @@ import { useState } from "react";
 import { selectSeriesList } from "../../../utils/selector";
 import { querySeries } from "../../../features/seriesList";
 import { SeriesListContainer, SeriesListPaginationContainer } from "../../../utils/style/UserList";
+import { Link } from "react-router-dom";
 
 export default function Home() {
     const user = useSelector(selectUser);
@@ -26,10 +27,10 @@ export default function Home() {
         setPage(page);
         return dispatch(querySeries(page, searchInput));
     }
-    console.log(page) 
 
     const handleSearch = async () => {
-        dispatch(querySeries(1, searchInput));
+        const request = searchInput.toString();
+        if(request && request !== ' ') dispatch(querySeries(1, request));
     }
 
     return (
@@ -40,10 +41,12 @@ export default function Home() {
                 <SeriesListContainer>
                     {seriesList?.data?.tv_shows.map(serie => {
                         return (
-                            <div key={serie?.id}>
-                                <img src={serie?.image_thumbnail_path} alt="o"/> 
-                                <p >{serie?.name}</p>
-                            </div>
+                            <Link to={`/detail/${serie?.id}`} key={serie?.id}>
+                                <div>
+                                    <img src={serie?.image_thumbnail_path} alt="o"/> 
+                                    <p >{serie?.name}</p>
+                                </div>
+                            </Link>
                         );
                     })}
                     <SeriesListPaginationContainer>
@@ -53,8 +56,17 @@ export default function Home() {
                             <button disabled>Previous</button>
                             ) 
                         }
-                        {numberOfPage.map(page => {
-                            return <button onClick={() => goToPage(page+1)}>{page+1}</button>
+                        {numberOfPage.map(paginationPage => {
+                            if(paginationPage + 1 === page) {
+                                return <button 
+                                    onClick={() => goToPage(paginationPage+1)} 
+                                    key={paginationPage}
+                                    disabled
+                                    >
+                                        {paginationPage+1}
+                                    </button>
+                            }
+                            return <button onClick={() => goToPage(paginationPage+1)} key={paginationPage}>{paginationPage+1}</button>
                         })}
                         {page < numberOfPage.length ? (
                             <button onClick={() => goToPage(page+1)}>Next</button>

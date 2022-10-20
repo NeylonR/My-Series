@@ -17,5 +17,9 @@ export const SeriesListPaginationContainer = styled.div`
         color: white;
         border: none;
         cursor: pointer;
+        &:disabled{
+            cursor: default;
+            filter: grayscale(80%);
+        }
     }
 `;

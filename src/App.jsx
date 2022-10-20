@@ -5,6 +5,7 @@ import Home from './views/pages/Home';
 import { Route, Routes } from 'react-router-dom';
 import RequireAuth from './views/components/RequireAuth';
 import RequireNotAuth from './views/components/RequireNotAuth';
+import SerieDetail from './views/pages/SerieDetail';
 
 export default function App() {
   return (
@@ -12,7 +13,7 @@ export default function App() {
       <Route path={"/"} element={<Layout />}>
 
         <Route path={"/"} element={<Home />}/>
-
+        <Route path={'/detail/:serieId'} element={<SerieDetail />}/>
         {/* if already logged in then can't access these pages */}
         <Route element={<RequireNotAuth />}>
           <Route path={'/login'} element={<Login />}/>
