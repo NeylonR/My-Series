@@ -25,6 +25,7 @@ export default function Header() {
                         <li><Link to={'/login'}>Login</Link></li>
                     </> ) : (
                         <>
+                        <li><Link to={'/myList'}>My list</Link></li>
                         {/* <li><Link to={'/profile'}>Profile</Link></li> */}
                         <li><button onClick={logout}>Logout</button></li>
                         </>

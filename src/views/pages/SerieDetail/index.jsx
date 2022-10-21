@@ -1,56 +1,74 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { SerieDetailSection, SerieDetailInformation } from "../../../utils/style/SerieDetail";
 import { Button } from '../../../utils/style/GlobalStyle';
+import { useDispatch, useSelector } from "react-redux";
+import { selectSerieDetail, selectUser } from "../../../utils/selector";
+import { querySerieDetail } from "../../../features/serieDetail";
+import { addToList } from "../../../features/userSeriesList";
 
 export default function SerieDetail() {
-    const [ data, setData ] = useState();
+    const data = useSelector(selectSerieDetail);
     const { serieId } = useParams();
-    const [ description, setDescription ] = useState('');
-    
-    useEffect(() => {
-        const getSerieDetail = async () => {
-            try {
-                const response = await axios.get(`https://www.episodate.com/api/show-details?q=${serieId}`);
-                setData(response.data?.tvShow);
-                // some description contains html tags, so we need to remove them with replaceAll
-                setDescription(response.data?.tvShow?.description?.replaceAll(/<.{1,3}>/g, ''));
-            } catch (error) {
-                console.error(error)
-            }
-        }
-        getSerieDetail();
-    }, [serieId]);
+    const dispatch = useDispatch();
+    const serieDetail = data?.data?.tvShow;
+    // some description contains html tags, so we need to remove them with replaceAll
+    const serieDescription = serieDetail?.description?.replaceAll(/<.{1,3}>/g, '');
+    const [ formSelect, setFormSelect ] = useState('');
+    const user = useSelector(selectUser);
+    const userToken = user?.data?.token?.token;
 
-    // console.log(data)
+    useEffect(() => {
+        dispatch(querySerieDetail(serieId));
+    }, [dispatch, serieId]);
+
+    console.log(formSelect)
     return (
         <SerieDetailSection>
-            {data && Object.keys(data).length > 0 ? (
+            {serieDetail && Object.keys(serieDetail).length > 0 ? (
                 <>
-                    <img src={data.image_path} alt={`Poster of the serie ${data.name}`}/>
+                    <img src={serieDetail.image_path} alt={`Poster of the serie ${serieDetail.name}`}/>
                     <SerieDetailInformation>
-                        <h1>{data.name}</h1>
-                        {data?.network && <p>Run by {data?.network} ({data?.country})</p>}
-                        <p>Serie started the {data.start_date}.</p>
-                        {data?.status === 'Running' ? (
+                        <h1>{serieDetail.name}</h1>
+                        {serieDetail?.network && <p>Run by {serieDetail?.network} ({serieDetail?.country})</p>}
+                        <p>Serie started the {serieDetail.start_date}.</p>
+                        {serieDetail?.status === 'Running' ? (
                             <p>The show is still running.</p>
                             ) : (
                             <p>Serie is now over or has been canceled.</p>
                         )}
-                        <p>Total episodes : {data?.episodes.length}</p>
-                        <p>{description}</p>
+                        <p>Total episodes : {serieDetail?.episodes?.length}</p>
+                        <p>{serieDescription}</p>
                         <ul>
                             <li>Genre :</li>
-                            {data.genres.map((genre, i) => {
+                            {serieDetail.genres.map((genre, i) => {
                                 return <li key={i+genre}>{genre}</li>
                             })}
                         </ul>
-                        <Button>Add this serie</Button>
+                        <form 
+                        onSubmit={(e)=>{
+                            e.preventDefault();
+                            dispatch(addToList(serieDetail.id, formSelect, userToken));
+                        }}>
+                            <select 
+                                name='addSerieToList' 
+                                id='addSerieToList' 
+                                required 
+                                defaultValue={''}
+                                onChange={(e)=>{setFormSelect(e.target.value)}}
+                            >
+                                <option value='' disabled>--Add serie to my list as--</option>
+                                <option value='watching'>Watching</option>
+                                <option value='completed'>Completed</option>
+                                <option value='planToWatch'>Plan to watch</option>
+                            </select>
+                            <Button>Add to my list</Button>
+                        </form>
+                        
                     </SerieDetailInformation>
                     
-                    {/* {data?.rating ? (
-                        <p>Has a rating of {Math.round(data?.rating * 10) / 10}/10 on episodate.</p>
+                    {/* {serieDetail?.rating ? (
+                        <p>Has a rating of {Math.round(serieDetail?.rating * 10) / 10}/10 on episodate.</p>
                     ) : (
                         <p>Has no ratng on episodate.</p>
                     )} */}

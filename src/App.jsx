@@ -6,6 +6,7 @@ import { Route, Routes } from 'react-router-dom';
 import RequireAuth from './views/components/RequireAuth';
 import RequireNotAuth from './views/components/RequireNotAuth';
 import SerieDetail from './views/pages/SerieDetail';
+import UserSeriesList from './views/pages/UserSeriesList';
 
 export default function App() {
   return (
@@ -22,7 +23,7 @@ export default function App() {
         
         {/* can only be access if logged in */}
         <Route element={<RequireAuth />}>
-        {/* <Route path={'/series'} element={<SeriesList />}/> */}
+        <Route path={'/myList'} element={<UserSeriesList />}/>
         </Route>
       </Route>
     </Routes>
