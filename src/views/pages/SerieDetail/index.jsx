@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectSerieDetail, selectUser } from "../../../utils/selector";
 import { querySerieDetail } from "../../../features/serieDetail";
 import { addToList } from "../../../features/userSeriesList";
+import SelectStatusSerie from "../../components/SelectStatusSerie";
 
 export default function SerieDetail() {
     const data = useSelector(selectSerieDetail);
@@ -22,7 +23,11 @@ export default function SerieDetail() {
         dispatch(querySerieDetail(serieId));
     }, [dispatch, serieId]);
 
-    console.log(formSelect)
+    const handleSubmit = (e, serieDetail) => {
+        e.preventDefault();
+        dispatch(addToList(serieDetail?.id, serieDetail?.image_path, serieDetail?.name, formSelect, userToken));
+    };
+
     return (
         <SerieDetailSection>
             {serieDetail && Object.keys(serieDetail).length > 0 ? (
@@ -47,21 +52,9 @@ export default function SerieDetail() {
                         </ul>
                         <form 
                         onSubmit={(e)=>{
-                            e.preventDefault();
-                            dispatch(addToList(serieDetail.id, formSelect, userToken));
+                            handleSubmit(e, serieDetail);
                         }}>
-                            <select 
-                                name='addSerieToList' 
-                                id='addSerieToList' 
-                                required 
-                                defaultValue={''}
-                                onChange={(e)=>{setFormSelect(e.target.value)}}
-                            >
-                                <option value='' disabled>--Add serie to my list as--</option>
-                                <option value='watching'>Watching</option>
-                                <option value='completed'>Completed</option>
-                                <option value='planToWatch'>Plan to watch</option>
-                            </select>
+                            <SelectStatusSerie handleSelect={setFormSelect}/>
                             <Button>Add to my list</Button>
                         </form>
                         

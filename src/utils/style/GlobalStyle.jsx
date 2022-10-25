@@ -17,7 +17,7 @@ export const StyledGlobalStyle = createGlobalStyle`
     }
     main{
         min-height: 90vh;
-        ${flex({ just : 'center', align : 'center', direction : 'column'})};
+        ${flex({ just : 'flex-start', align : 'center', direction : 'column'})};
         padding: 4em 2em;
         word-break:break-word;
     }
