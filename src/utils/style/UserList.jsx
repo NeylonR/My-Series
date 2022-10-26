@@ -27,6 +27,9 @@ export const SeriesListPaginationContainer = styled.div`
 export const UserSeriesStatus = styled.div`
     ${flex({})};
     gap: 1em;
+    h2{
+        cursor: pointer;
+    }
 `;
 
 export const UserSeriesSection = styled.section`
@@ -74,6 +77,13 @@ export const UserSeriesListContainerLi = styled.li`
         color: black;
         font-size: 16px;
         cursor:pointer;
+    }
+    div, div form{
+        ${flex({align: 'center'})};
+        gap: .3em;
+    }
+    div form button{
+        margin: 0;
     }
 
     &:nth-of-type(2n+1){

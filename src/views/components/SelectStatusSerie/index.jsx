@@ -1,4 +1,41 @@
-export default function SelectStatusSerie({ handleSelect }){
+import { useEffect, useState } from "react";
+
+export default function SelectStatusSerie({ handleSelect, status, selectDefault }){
+    const [option, setOption ] = useState();
+    useEffect(()=>{
+        selectDisplay(status);
+    }, [status]);
+
+    const selectDisplay = (status) => {
+        switch (status) {
+            case 'watching':
+                setOption([
+                    { value: 'completed', text: 'Completed' },
+                    { value: 'planToWatch', text: 'Plan to watch' }
+                ]);
+                break;
+            case 'completed':
+                setOption([
+                    { value: 'watching', text: 'Watching' },
+                    { value: 'planToWatch', text: 'Plan to watch' }
+                ]);
+                break;
+            case 'planToWatch':
+                setOption([
+                    { value: 'completed', text: 'Completed' },
+                    { value: 'watching', text: 'Watching' },
+                ]);
+                break;
+            default:
+                setOption([
+                    { value: 'completed', text: 'Completed' },
+                    { value: 'watching', text: 'Watching' },
+                    { value: 'planToWatch', text: 'Plan to watch' }
+                ]);
+                break;
+        }
+    };
+
     return (
         <select 
             name='addSerieToList' 
@@ -7,10 +44,15 @@ export default function SelectStatusSerie({ handleSelect }){
             defaultValue={''}
             onChange={(e)=>{handleSelect(e.target.value)}}
         >
-            <option value='' disabled>--Add serie to my list as--</option>
-            <option value='watching'>Watching</option>
-            <option value='completed'>Completed</option>
-            <option value='planToWatch'>Plan to watch</option>
+            <option value='' disabled>--{selectDefault}--</option>
+            {option && option?.map(option => {
+                return (
+                    <option 
+                        key={option?.value} 
+                        value={option?.value}
+                    >{option?.text}</option>
+                );
+            })}
         </select>
     );
 }

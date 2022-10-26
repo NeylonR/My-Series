@@ -82,7 +82,6 @@ export function loginUser(form){
         axios.post('http://localhost:4200/api/auth/login', form)
             .then(res => {
                 dispatch(resolved(form ,res.data))
-
             })
             .catch(error => {
                 dispatch(rejected(error.response.data.message))

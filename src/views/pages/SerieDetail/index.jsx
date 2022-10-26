@@ -3,13 +3,15 @@ import { useParams } from "react-router-dom";
 import { SerieDetailSection, SerieDetailInformation } from "../../../utils/style/SerieDetail";
 import { Button } from '../../../utils/style/GlobalStyle';
 import { useDispatch, useSelector } from "react-redux";
-import { selectSerieDetail, selectUser } from "../../../utils/selector";
+import { selectSerieDetail, selectUser, selectUserSeriesList } from "../../../utils/selector";
 import { querySerieDetail } from "../../../features/serieDetail";
 import { addToList } from "../../../features/userSeriesList";
 import SelectStatusSerie from "../../components/SelectStatusSerie";
+import { fetchList } from "../../../features/userSeriesList";
 
 export default function SerieDetail() {
     const data = useSelector(selectSerieDetail);
+    const userSeriesList = useSelector(selectUserSeriesList);
     const { serieId } = useParams();
     const dispatch = useDispatch();
     const serieDetail = data?.data?.tvShow;
@@ -18,10 +20,28 @@ export default function SerieDetail() {
     const [ formSelect, setFormSelect ] = useState('');
     const user = useSelector(selectUser);
     const userToken = user?.data?.token?.token;
+    const [ serieStatus, setSerieStatus ] = useState('default');
 
     useEffect(() => {
         dispatch(querySerieDetail(serieId));
+        if(userSeriesList?.data?.series) dispatch(fetchList(userToken));
+        setSerieStatus(userSeriesList?.data?.series?.some(serie => {
+            if(serie.id === serieDetail?.id?.toString() && serieStatus === 'default'){
+                setSerieStatus(serie?.status);
+                return true; 
+             }
+             return false;
+         }))
+        userSeriesList?.data?.series?.some(serie => {
+        if(serie.id === serieDetail?.id?.toString() && serieStatus === 'default'){
+            setSerieStatus(serie?.status);
+            return true; 
+         }
+         return false;
+     });
     }, [dispatch, serieId]);
+
+    //  console.log(serieStatus)
 
     const handleSubmit = (e, serieDetail) => {
         e.preventDefault();
@@ -54,7 +74,24 @@ export default function SerieDetail() {
                         onSubmit={(e)=>{
                             handleSubmit(e, serieDetail);
                         }}>
-                            <SelectStatusSerie handleSelect={setFormSelect}/>
+                            {serieStatus !== 'default' ? (
+                                <SelectStatusSerie 
+                                handleSelect={setFormSelect}
+                                selectDefault={'Edit'}
+                                status={serieStatus}
+                            />
+                            ) : (
+                                <SelectStatusSerie 
+                                handleSelect={setFormSelect}
+                                selectDefault={'Add serie to my list as'}
+                                status={serieStatus}
+                            />
+                            )
+                            }
+                            {/* <SelectStatusSerie 
+                                handleSelect={setFormSelect}
+                                selectDefault={'Add serie to my list as'}
+                            /> */}
                             <Button>Add to my list</Button>
                         </form>
                         

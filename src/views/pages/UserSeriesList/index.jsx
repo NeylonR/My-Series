@@ -23,15 +23,13 @@ export default function UserSeriesList() {
     useEffect(() => {
         dispatch(fetchList(userToken))
     }, []);
-    console.log(userSeriesList)
 
-    //copy the list to order it alphabetically
-    // const userSeriesListSorted = [...userSeriesList?.data?.series];
-    // userSeriesListSorted.sort(function(a, b) {
-    //     var textA = a.name.toUpperCase();
-    //     var textB = b.name.toUpperCase();
-    //     return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
-    // });
+    //copy the series list array to order it alphabetically by serie's name
+    const sortedUserSeriesList = userSeriesList?.data?.series.slice().sort(function(a, b) {
+        var serieA = a.name.toUpperCase();
+        var serieB = b.name.toUpperCase();
+        return (serieA < serieB) ? -1 : (serieA > serieB) ? 1 : 0;
+    });
 
     const deleteSerie = (e, serie) => {
         e.preventDefault();
@@ -65,7 +63,7 @@ export default function UserSeriesList() {
 
             <h2>{statusString}</h2>
             <UserSeriesListContainer>
-                {userSeriesList?.data?.series?.length > 0 && userSeriesList?.data?.series?.map(serie => {
+                {userSeriesList?.data?.series?.length > 0 && sortedUserSeriesList?.map(serie => {
                     if(serie?.status === status) {
                         return (
                             <UserSeriesListContainerLi key={serie?.id}>
@@ -86,7 +84,11 @@ export default function UserSeriesList() {
                                     <form onSubmit={(e) => {
                                         handleSubmit(e, serie);
                                     }}>
-                                        <SelectStatusSerie handleSelect={setFormSelect}/>
+                                        <SelectStatusSerie 
+                                            handleSelect={setFormSelect} 
+                                            status={serie?.status}
+                                            selectDefault={'Edit status'}
+                                        />
                                         <Button>Edit</Button>
                                     </form>
                                 </div>
