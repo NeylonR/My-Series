@@ -17,11 +17,10 @@ export default function UserSeriesList() {
     const userToken = user?.data?.token?.token;
     const userSeriesList = useSelector(selectUserSeriesList);
     const [ status, setStatus ] = useState('completed');
-    const statusString = status.charAt(0).toUpperCase() + status.slice(1);
     const [ formSelect, setFormSelect ] = useState('');
 
     useEffect(() => {
-        dispatch(fetchList(userToken))
+        dispatch(fetchList(userToken));
     }, []);
 
     //copy the series list array to order it alphabetically by serie's name
@@ -61,7 +60,7 @@ export default function UserSeriesList() {
                 >Plan to watch</h2>
             </UserSeriesStatus>
 
-            <h2>{statusString}</h2>
+            {/* <h2>{statusString}</h2> */}
             <UserSeriesListContainer>
                 {userSeriesList?.data?.series?.length > 0 && sortedUserSeriesList?.map(serie => {
                     if(serie?.status === status) {

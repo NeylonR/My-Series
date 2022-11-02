@@ -5,7 +5,7 @@ import { Button } from '../../../utils/style/GlobalStyle';
 import { useDispatch, useSelector } from "react-redux";
 import { selectSerieDetail, selectUser, selectUserSeriesList } from "../../../utils/selector";
 import { querySerieDetail } from "../../../features/serieDetail";
-import { addToList } from "../../../features/userSeriesList";
+import { addToList, editList } from "../../../features/userSeriesList";
 import SelectStatusSerie from "../../components/SelectStatusSerie";
 import { fetchList } from "../../../features/userSeriesList";
 
@@ -21,31 +21,30 @@ export default function SerieDetail() {
     const user = useSelector(selectUser);
     const userToken = user?.data?.token?.token;
     const [ serieStatus, setSerieStatus ] = useState('default');
+    const statusStringCapitalize = serieStatus.charAt(0).toUpperCase() + serieStatus.slice(1);
 
     useEffect(() => {
         dispatch(querySerieDetail(serieId));
         if(userSeriesList?.data?.series) dispatch(fetchList(userToken));
-        setSerieStatus(userSeriesList?.data?.series?.some(serie => {
-            if(serie.id === serieDetail?.id?.toString() && serieStatus === 'default'){
-                setSerieStatus(serie?.status);
-                return true; 
+    }, []);
+
+    useEffect(() => {
+        // we get the status of the displayed serie if it's in the user series list
+        userSeriesList?.data?.series?.map(serie => {
+            if(serie.id === serieId.toString()){
+                setSerieStatus(serie.status);
              }
-             return false;
-         }))
-        userSeriesList?.data?.series?.some(serie => {
-        if(serie.id === serieDetail?.id?.toString() && serieStatus === 'default'){
-            setSerieStatus(serie?.status);
-            return true; 
-         }
-         return false;
-     });
-    }, [dispatch, serieId]);
+         })
+    }, [userSeriesList]);
 
-    //  console.log(serieStatus)
-
-    const handleSubmit = (e, serieDetail) => {
+    const handleSubmitAddToList = (e, serieDetail) => {
         e.preventDefault();
         dispatch(addToList(serieDetail?.id, serieDetail?.image_path, serieDetail?.name, formSelect, userToken));
+    };
+
+    const handleSubmitEditList = (e, serieDetail) => {
+        e.preventDefault();
+        dispatch(editList(serieDetail?.id, formSelect, userToken));
     };
 
     return (
@@ -70,31 +69,35 @@ export default function SerieDetail() {
                                 return <li key={i+genre}>{genre}</li>
                             })}
                         </ul>
-                        <form 
-                        onSubmit={(e)=>{
-                            handleSubmit(e, serieDetail);
-                        }}>
-                            {serieStatus !== 'default' ? (
-                                <SelectStatusSerie 
-                                handleSelect={setFormSelect}
-                                selectDefault={'Edit'}
-                                status={serieStatus}
-                            />
-                            ) : (
-                                <SelectStatusSerie 
-                                handleSelect={setFormSelect}
-                                selectDefault={'Add serie to my list as'}
-                                status={serieStatus}
-                            />
-                            )
-                            }
-                            {/* <SelectStatusSerie 
-                                handleSelect={setFormSelect}
-                                selectDefault={'Add serie to my list as'}
-                            /> */}
-                            <Button>Add to my list</Button>
-                        </form>
                         
+                        {userToken && (
+                            serieStatus !== 'default' ? (
+                                <form 
+                                onSubmit={(e)=>{
+                                    handleSubmitEditList(e, serieDetail);
+                                }}>
+                                    <SelectStatusSerie 
+                                    key={serieStatus}
+                                    handleSelect={setFormSelect}
+                                    selectDefault={statusStringCapitalize}
+                                    status={serieStatus}
+                                    />
+                                    <Button>Edit</Button>
+                                </form>
+                            ) : (
+                                <form 
+                                onSubmit={(e)=>{
+                                    handleSubmitAddToList(e, serieDetail);
+                                }}>
+                                    <SelectStatusSerie 
+                                    handleSelect={setFormSelect}
+                                    selectDefault={'Add serie to my list as'}
+                                    status={serieStatus}
+                                    />
+                                    <Button>Add to my list</Button>
+                                </form>
+                            )
+                        )}
                     </SerieDetailInformation>
                     
                     {/* {serieDetail?.rating ? (

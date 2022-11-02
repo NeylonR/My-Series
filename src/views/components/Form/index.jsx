@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser, signupUser } from "../../../features/user";
+import { loginUser, logout, signupUser } from "../../../features/user";
 import { selectUser } from "../../../utils/selector";
 
 export default function Form({ url, title, formArr, submitBtn, formLogin }) {
@@ -60,21 +60,22 @@ export default function Form({ url, title, formArr, submitBtn, formLogin }) {
                 navigate(from, { replace: true});
             }
             if(user.error){
-                console.error(user.error)
                 setIsSubmit(false);
             }
-            console.log(user.error)
         } 
         setIsSubmit(false);
     }, [formErrors]);
 
+    useEffect(() => {
+        dispatch(logout());
+    }, [])
 
     return (
         <FormStyle onSubmit={(e) => {
                 e.preventDefault();
                 handleSubmit();
             }}>
-            <FormTitleStyle>{user.data?.token?.token}</FormTitleStyle>
+            <FormTitleStyle>{formLogin ? 'Login' : 'Signup'}</FormTitleStyle>
             {formArr.map(({label, name, type, placeholder}, index) => (
                 <InputContainerStyle key={label + index}>
                     <LabelStyle htmlFor={name} >{label}</LabelStyle>
@@ -88,7 +89,9 @@ export default function Form({ url, title, formArr, submitBtn, formLogin }) {
                         onChange={(e)=>onChangeHandler(e)} 
                         required={true}
                     />
-                    {formErrors[name] && <ErrorMessageStyle>{formErrors[name]}</ErrorMessageStyle>}
+                    {formErrors[name] && (
+                        <ErrorMessageStyle>{formErrors[name]}</ErrorMessageStyle>
+                    )}
                 </InputContainerStyle>
             ))}
             {user.data?.message && <p>{user.data?.message}</p>}

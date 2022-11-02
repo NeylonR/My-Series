@@ -44,7 +44,7 @@ export default function SelectStatusSerie({ handleSelect, status, selectDefault 
             defaultValue={''}
             onChange={(e)=>{handleSelect(e.target.value)}}
         >
-            <option value='' disabled>--{selectDefault}--</option>
+            <option value='' disabled>--{selectDefault === 'PlanToWatch' ? 'Plan to watch' : selectDefault}--</option>
             {option && option?.map(option => {
                 return (
                     <option 

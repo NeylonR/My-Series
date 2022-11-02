@@ -48,18 +48,18 @@ const { actions, reducer } = createSlice({
                 return;
             },
         },
-        addSerie: {
-            prepare: (message) => ({ payload: {message} }),
-            reducer: (draft, action) => {
-                if(draft.status === 'pending' || draft.status === 'updating'){
-                    draft.data = action.payload.message;
-                    draft.status = 'void';
-                    draft.error = null;
-                    return;
-                }
-                return;
-            },
-        },
+        // addSerie: {
+        //     prepare: (message) => ({ payload: {message} }),
+        //     reducer: (draft, action) => {
+        //         if(draft.status === 'pending' || draft.status === 'updating'){
+        //             draft.data = action.payload.message;
+        //             draft.status = 'void';
+        //             draft.error = null;
+        //             return;
+        //         }
+        //         return;
+        //     },
+        // },
     },
 });
 
@@ -89,7 +89,7 @@ export function addToList(serieId, image_url, name, formSelect, token){
         axios.post(`http://localhost:4200/api/userSeriesList/${serieId}`, {formSelect: formSelect, image_url: image_url, name: name}, 
         {headers:{"Authorization" : `Bearer ${token}`}})
             .then(res => {
-                dispatch(addSerie(res.data))
+                dispatch(resolved(res.data))
             })
             .catch(error => {
                 dispatch(rejected(error.response.data.message))

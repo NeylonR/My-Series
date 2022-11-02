@@ -87,7 +87,7 @@ export function loginUser(form){
                 dispatch(rejected(error.response.data.message))
             });
     }
-}
+};
 
 export function signupUser(form){
     return async (dispatch, getState) => {
@@ -102,6 +102,6 @@ export function signupUser(form){
                 dispatch(rejected(error.response.data.message))
             });
     }
-}
+};
 
 export default reducer;

@@ -3,8 +3,13 @@ import { flex } from './mixins';
 import colors from './colors';
 
 export const SeriesListContainer = styled.div`
-    ${flex({direction : 'row', align : 'flex-end'})};
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    align-items: start;
+    justify-items: center;
+    width:100%;
     gap: 1em;
+    padding: 2em;
 `;
 
 export const SeriesListPaginationContainer = styled.div`
@@ -21,6 +26,20 @@ export const SeriesListPaginationContainer = styled.div`
             cursor: default;
             filter: grayscale(80%);
         }
+    }
+`;
+
+export const SeriesListSearchContainerLi = styled.li`
+    ${flex({direction: 'column', just: 'center'})};
+    gap: .3em;
+    padding: .3em .5em;
+    a{
+        // line-height:0;
+        color :black;
+    }
+    img{
+        max-width: 225px;
+        height: 300px;
     }
 `;
 
