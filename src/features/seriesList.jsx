@@ -71,6 +71,3 @@ export function querySeries(page, query){
 
 
 export default reducer;
-//http://www.omdbapi.com/?i=tt3896198&apikey=4038b2e5
-// `https://api.tvmaze.com/search/shows?q=${query}`
-//https://www.episodate.com/api/search?q=
