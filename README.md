@@ -1,3 +1,11 @@
+Projet pour continuer de manipuler ReactJS et utiliser Redux.
+
+Inscription + connexion, utilisation d'une api externe pour afficher une liste de film/séries/anime, l'utilisateur ajoute/supprime des médias vidéo à sa liste et peut aussi modifier son état (completed/watching/plan to watch)
+
+ReactJS/Redux pour le front, NodeJS pour l'[API](https://github.com/NeylonR/My-Series-Api/tree/master)
+
+API public utilisé : [Episodate](https://www.episodate.com/api)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
